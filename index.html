@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonos Premium - Imperio Interno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F9F5FF 0%, #D4F0ED 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(155, 123, 184, 0.15);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+        }
+        .logo { margin-bottom: 40px; }
+        .logo h1 { 
+            font-family: 'Playfair Display', serif;
+            color: #9B7BB8; 
+            font-size: 32px; 
+            margin-bottom: 8px; 
+        }
+        .logo p { color: #7A7A7A; font-size: 14px; }
+        .form-group { margin-bottom: 24px; text-align: left; }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #4A4A4A;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #E0D5ED;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #5DBFB8;
+            box-shadow: 0 0 0 3px rgba(93, 191, 184, 0.1);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #9B7BB8, #5DBFB8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(93, 191, 184, 0.3);
+        }
+        button:active { transform: translateY(0); }
+        .error { 
+            color: #EF4444; 
+            font-size: 13px; 
+            margin-top: 8px; 
+            display: none; 
+            text-align: center;
+        }
+        .success { 
+            color: #10B981; 
+            font-size: 13px; 
+            margin-top: 8px; 
+            display: none;
+            text-align: center;
+        }
+        .info-box {
+            background: rgba(93, 191, 184, 0.08);
+            border-left: 4px solid #5DBFB8;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .info-box p {
+            font-size: 12px;
+            color: #7A7A7A;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🎁 Bonos Premium</h1>
+            <p>Imperio Interno</p>
+        </div>
+        
+        <form id="accessForm">
+            <div class="form-group">
+                <label for="code">Código de Acceso</label>
+                <input type="password" id="code" placeholder="Ingresa tu código" required autofocus>
+                <div class="error" id="error">❌ Código incorrecto</div>
+                <div class="success" id="success">✅ ¡Acceso correcto!</div>
+            </div>
+            <button type="submit">Acceder al Workbook</button>
+        </form>
+
+        <div class="info-box">
+            <p><strong>💡 Tip:</strong> Tu código de acceso fue enviado a tu email después de la compra. Si no lo encuentras, revisa tu carpeta de spam.</p>
+        </div>
+    </div>
+
+    <script>
+        // El código correcto (cámbialo por el que quieras)
+        const CODIGO_CORRECTO = "IMPERIO2024";
+        
+        document.getElementById('accessForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const codigo = document.getElementById('code').value;
+            
+            if (codigo === CODIGO_CORRECTO) {
+                document.getElementById('success').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+                
+                // Guardar en localStorage que ya accedió
+                localStorage.setItem('bonosAcceso', 'true');
+                
+                // Redirigir al workbook después de 1 segundo
+                setTimeout(() => {
+                    window.location.href = 'workbook.html';
+                }, 1000);
+            } else {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('success').style.display = 'none';
+                document.getElementById('code').value = '';
+                document.getElementById('code').focus();
+            }
+        });
+        
+        // Si ya tiene acceso, ir directamente al workbook
+        if (localStorage.getItem('bonosAcceso') === 'true') {
+            window.location.href = 'workbook.html';
+        }
+    </script>
+</body>
+</html>

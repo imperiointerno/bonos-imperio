@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonos Premium – Imperio Freelancers</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --purple-dark: #9B7BB8;
+    --purple-mid: #B8A8D8;
+    --purple-light: #D9C8E9;
+    --purple-bg: #E8DDF5;
+    --pink: #E8B4D4;
+    --pink-light: #F5DDE9;
+    --teal: #5DBFB8;
+    --teal-light: #7ECCC4;
+    --teal-bg: #D4F0ED;
+    --page-bg: #F5F0FA;
+    --text-dark: #4A4A4A;
+    --text-mid: #7A7A7A;
+    --white: #fff;
+    --gray-bg: #F2EDF8;
+    --border: #E0D5ED;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F5F0FA;
+    color: var(--text-dark);
+    line-height: 1.7;
+  }
+
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(155, 123, 184, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 40px;
+    box-shadow: 0 2px 20px rgba(155, 123, 184, 0.2);
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .nav-brand span { color: var(--teal); }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+
+  .pages { margin-top: 60px; }
+
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding: 60px 0;
+  }
+  .page.active { display: block; }
+
+  .page-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  #cover {
+    background: linear-gradient(160deg, #F9F5FF 0%, #D4F0ED 40%, #F5F0FA 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0;
+  }
+  #cover.active { display: flex; }
+  .cover-inner {
+    max-width: 700px;
+    padding: 80px 40px;
+  }
+  .cover-badge {
+    display: inline-block;
+    background: rgba(93, 191, 184, 0.15);
+    border: 1px solid rgba(93, 191, 184, 0.3);
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, #9B7BB8, #5DBFB8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cover-desc {
+    font-size: 15px;
+    color: var(--text-mid);
+    margin-bottom: 50px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cover-bonos {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+  }
+  .cover-bono-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    width: 190px;
+    box-shadow: 0 4px 24px rgba(93, 191, 184, 0.12);
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .cover-bono-icon { font-size: 28px; margin-bottom: 10px; }
+  .cover-bono-name { font-size: 12px; font-weight: 700; color: var(--purple-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+  .cover-bono-desc { font-size: 11px; color: var(--text-mid); margin-top: 4px; }
+  .cover-cta {
+    background: linear-gradient(135deg, #9B7BB8, #5DBFB8);
+    color: #fff;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(93, 191, 184, 0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .cover-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(93, 191, 184, 0.35); }
+  .cover-brand {
+    margin-top: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--purple-mid);
+  }
+
+  .section-header {
+    background: linear-gradient(135deg, #B8A8D8 0%, #5DBFB8 100%);
+    border-radius: 20px;
+    padding: 50px 50px 40px;
+    margin-bottom: 40px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .section-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -20px;
+    width: 150px; height: 150px;
+    background: rgba(93, 191, 184, 0.2);
+    border-radius: 50%;
+  }
+  .bono-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .section-header h1 {
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .section-header .tagline {
+    font-size: 14px;
+    opacity: 0.85;
+    font-weight: 400;
+    max-width: 600px;
+  }
+
+  .content-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(155, 123, 184, 0.08);
+  }
+
+  .block-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--teal);
+    margin-bottom: 14px;
+  }
+  .block-text {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(93, 191, 184, 0.08), rgba(155, 123, 184, 0.08));
+    border-left: 4px solid var(--teal);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  .highlight-box h3 { color: var(--teal); font-size: 16px; margin-bottom: 8px; }
+  .highlight-box p { color: var(--text-mid); font-size: 14px; line-height: 1.7; }
+
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--purple-dark), var(--teal));
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 800;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .step-content h4 { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 6px; }
+  .step-content p { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+  .tools-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  .tools-table th {
+    background: var(--teal);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .tools-table th:first-child { border-radius: 10px 0 0 0; }
+  .tools-table th:last-child { border-radius: 0 10px 0 0; }
+  .tools-table td { padding: 11px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .tools-table tr:nth-child(even) td { background: var(--gray-bg); }
+  .tools-table tr:last-child td { border-bottom: none; }
+  .tools-table td:first-child { font-weight: 600; color: var(--purple-dark); }
+
+  .interactive-section {
+    background: linear-gradient(135deg, #F9F5FF, #D4F0ED);
+    border: 2px solid var(--teal-light);
+    border-radius: 16px;
+    padding: 30px;
+    margin: 24px 0;
+  }
+  .interactive-label {
+    display: inline-block;
+    background: var(--teal);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .interactive-section h2 { color: var(--purple-dark); font-size: 24px; margin-bottom: 8px; }
+  .interactive-section h3 { color: var(--purple-dark); font-size: 18px; margin-bottom: 8px; }
+  .interactive-section .desc { color: var(--text-mid); font-size: 14px; margin-bottom: 20px; }
+
+  .form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .form-table th {
+    background: var(--teal);
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  .form-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-table tr:last-child td { border-bottom: none; }
+
+  .editable-input, .select-input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid var(--teal);
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: border-color 0.3s;
+  }
+  .editable-input:focus, .select-input:focus {
+    outline: none;
+    border-bottom-color: var(--pink);
+  }
+
+  .chart-container {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(155, 123, 184, 0.08);
+  }
+  .chart-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple-dark);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .dist-bar-container { margin: 16px 0; }
+  .dist-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .dist-bar-label { font-size: 13px; font-weight: 600; color: var(--purple-dark); width: 180px; flex-shrink: 0; }
+  .dist-bar-track {
+    flex: 1;
+    height: 28px;
+    background: var(--gray-bg);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .dist-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--teal-light));
+    font-weight: 700;
+    color: #fff;
+    transition: width 0.5s ease;
+  }
+  .dist-bar-value { font-size: 13px; font-weight: 700; color: var(--purple-dark); width: 80px; text-align: right; }
+
+  .result-card {
+    background: linear-gradient(135deg, #B8A8D8, #5DBFB8);
+    color: #fff;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .result-card .result-label { font-size: 12px; font-weight: 600; opacity: 0.8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .result-card .result-value { font-size: 40px; font-weight: 900; margin-bottom: 6px; }
+  .result-card .result-desc { font-size: 13px; opacity: 0.85; }
+
+  .pipeline-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .pipeline-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+  }
+  .pipeline-card .p-icon { font-size: 28px; margin-bottom: 8px; }
+  .pipeline-card .p-value { font-size: 28px; font-weight: 900; color: var(--purple-dark); }
+  .pipeline-card .p-label { font-size: 11px; color: var(--text-mid); margin-top: 4px; }
+
+  .semaphore-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .semaphore-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+  }
+  .semaphore-card h4 { font-size: 13px; font-weight: 700; color: var(--purple-dark); margin-bottom: 6px; }
+  .semaphore-card .s-value { font-size: 22px; font-weight: 900; color: var(--purple-dark); }
+  .semaphore-card .s-label { font-size: 11px; color: var(--text-mid); margin-top: 4px; }
+
+  .final-quote {
+    background: linear-gradient(135deg, #B8A8D8, #5DBFB8);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    color: #fff;
+    margin-top: 30px;
+  }
+  .final-quote p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.7;
+    opacity: 0.95;
+  }
+
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-brand { font-size: 12px; }
+    .cover-title { font-size: 40px; }
+    .cover-bonos { flex-direction: column; align-items: center; }
+    .pipeline-grid { grid-template-columns: 1fr; }
+    .semaphore-grid { grid-template-columns: 1fr; }
+    .page-inner { padding: 0 20px; }
+    .section-header { padding: 30px 24px; }
+    .section-header h1 { font-size: 26px; }
+    .interactive-section { padding: 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .nav { padding: 10px 16px; }
+    .nav-brand { font-size: 11px; }
+    .nav-links { gap: 4px; }
+    .nav-btn { padding: 5px 12px; font-size: 11px; }
+    .cover-title { font-size: 32px; }
+    .cover-bono-card { width: 100%; }
+    .section-header { padding: 20px 16px; }
+    .section-header h1 { font-size: 22px; }
+    .page-inner { padding: 0 16px; }
+    .form-table { font-size: 12px; }
+    .form-table th, .form-table td { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-brand">IMPERIO <span>FREELANCERS</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('bono1', this)">Bono 1</button>
+    <button class="nav-btn" onclick="showPage('bono2', this)">Bono 2</button>
+    <button class="nav-btn" onclick="showPage('bono3', this)">Bono 3</button>
+  </div>
+</div>
+
+<div class="pages">
+  <div id="bono1" class="page active">
+    <div class="page-inner">
+      <div class="section-header">
+        <span class="bono-badge">BONO 1</span>
+        <h1>El Método Retainer</h1>
+        <p class="tagline">Convierte clientes de proyecto en ingresos recurrentes garantizados</p>
+      </div>
+
+      <div class="content-block">
+        <h2 class="block-title">¿Qué es un Retainer?</h2>
+        <p class="block-text">Un retainer es un acuerdo mensual donde tu cliente te paga una cantidad fija por un conjunto de servicios entregados regularmente. Es la forma más segura de escalar ingresos como freelancer.</p>
+      </div>
+
+      <div class="highlight-box">
+        <h3>💡 Ventaja Principal</h3>
+        <p>Mientras otros freelancers venden su tiempo por proyecto, tú vendes valor mensual garantizado. Esto significa ingresos predecibles y crecimiento exponencial.</p>
+      </div>
+
+      <div class="interactive-section">
+        <span class="interactive-label">✏️ Planilla Interactiva</span>
+        <h3>Tu Retainer Personalizado</h3>
+        <p class="desc">Completa los datos de tu retainer para calcular tu ingreso mensual garantizado.</p>
+
+        <table class="form-table">
+          <thead>
+            <tr><th>Concepto</th><th>Tu información</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nombre del servicio retainer</td>
+              <td><input class="editable-input" type="text" id="ret-servicio" placeholder="Ej: Gestión Estratégica de Contenido"></td>
+            </tr>
+            <tr>
+              <td>Entregable mensual 1</td>
+              <td><input class="editable-input" type="text" id="ret-entregable1" placeholder="Ej: 12 piezas de contenido"></td>
+            </tr>
+            <tr>
+              <td>Entregable mensual 2</td>
+              <td><input class="editable-input" type="text" id="ret-entregable2" placeholder="Ej: Reporte mensual"></td>
+            </tr>
+            <tr>
+              <td>Entregable mensual 3</td>
+              <td><input class="editable-input" type="text" id="ret-entregable3" placeholder="Ej: Reunión de estrategia 30 min"></td>
+            </tr>
+            <tr>
+              <td>Precio mensual del retainer ($)</td>
+              <td><input class="editable-input" type="number" id="retainer-price" placeholder="Ej: 1500" oninput="calcRetainer()"></td>
+            </tr>
+            <tr>
+              <td>Número de clientes retainer objetivo</td>
+              <td><input class="editable-input" type="number" id="retainer-clients" placeholder="Ej: 3" oninput="calcRetainer()"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="result-card" id="retainer-result">
+          <div class="result-label">Ingreso mensual garantizado con retainers</div>
+          <div class="result-value" id="retainer-total">$0</div>
+          <div class="result-desc">Ingresa tus datos arriba para ver el resultado</div>
+        </div>
+      </div>
+
+      <div class="final-quote">
+        <p>"La diferencia entre un freelancer que sobrevive y uno que prospera es si cobra una vez por su trabajo o cobra todos los meses por el valor que entrega."</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="bono2" class="page">
+    <div class="page-inner">
+      <div class="section-header">
+        <span class="bono-badge">BONO 2</span>
+        <h1>El Protocolo 60</h1>
+        <p class="tagline">Genera clientes en 60 minutos diarios sin vender</p>
+      </div>
+
+      <div class="content-block">
+        <h2 class="block-title">¿Cómo funciona?</h2>
+        <p class="block-text">El Protocolo 60 es un sistema probado para generar contactos de calidad en solo 60 minutos diarios. No requiere experiencia en ventas, solo disciplina y el sistema correcto.</p>
+      </div>
+
+      <div class="interactive-section">
+        <span class="interactive-label">✏️ Planilla Interactiva</span>
+        <h3>CRM Simplificado del Freelancer</h3>
+        <p class="desc">Registra tus prospectos activos. Haz clic en las celdas para editar.</p>
+
+        <table class="form-table">
+          <thead>
+            <tr>
+              <th>Prospecto</th>
+              <th>Fuente</th>
+              <th>Estado</th>
+              <th>Próximo paso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="editable-input" type="text" id="crm-prosp1" placeholder="Nombre / empresa" oninput="calcPipeline()"></td>
+              <td><select class="select-input" id="crm-fuente1" onchange="calcPipeline()"><option>LinkedIn</option><option>Referido</option><option>Comunidad</option><option>Cliente anterior</option><option>Instagram</option><option>Email frío</option></select></td>
+              <td><select class="select-input" id="crm-estado1" onchange="calcPipeline()"><option>Contactado</option><option>Respondió</option><option>En conversación</option><option>Propuesta enviada</option><option>Cerrado ✓</option><option>No interesado</option></select></td>
+              <td><input class="editable-input" type="text" id="crm-paso1" placeholder="Seguimiento..." oninput="calcPipeline()"></td>
+            </tr>
+            <tr>
+              <td><input class="editable-input" type="text" id="crm-prosp2" placeholder="Nombre / empresa" oninput="calcPipeline()"></td>
+              <td><select class="select-input" id="crm-fuente2" onchange="calcPipeline()"><option>LinkedIn</option><option>Referido</option><option>Comunidad</option><option>Cliente anterior</option><option>Instagram</option><option>Email frío</option></select></td>
+              <td><select class="select-input" id="crm-estado2" onchange="calcPipeline()"><option>Contactado</option><option>Respondió</option><option>En conversación</option><option>Propuesta enviada</option><option>Cerrado ✓</option><option>No interesado</option></select></td>
+              <td><input class="editable-input" type="text" id="crm-paso2" placeholder="Seguimiento..." oninput="calcPipeline()"></td>
+            </tr>
+            <tr>
+              <td><input class="editable-input" type="text" id="crm-prosp3" placeholder="Nombre / empresa" oninput="calcPipeline()"></td>
+              <td><select class="select-input" id="crm-fuente3" onchange="calcPipeline()"><option>LinkedIn</option><option>Referido</option><option>Comunidad</option><option>Cliente anterior</option><option>Instagram</option><option>Email frío</option></select></td>
+              <td><select class="select-input" id="crm-estado3" onchange="calcPipeline()"><option>Contactado</option><option>Respondió</option><option>En conversación</option><option>Propuesta enviada</option><option>Cerrado ✓</option><option>No interesado</option></select></td>
+              <td><input class="editable-input" type="text" id="crm-paso3" placeholder="Seguimiento..." oninput="calcPipeline()"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="interactive-section">
+        <span class="interactive-label">🧮 Calculadora de Pipeline</span>
+        <h3>¿Cuántos clientes puedes cerrar?</h3>
+        <p class="desc">Ingresa tus datos y descubre el impacto del Protocolo 60.</p>
+
+        <table class="form-table">
+          <thead><tr><th>Variable</th><th>Tu número</th></tr></thead>
+          <tbody>
+            <tr><td>Prospectos contactados por día</td><td><input class="editable-input" type="number" id="p-dia" value="5" oninput="calcPipeline()"></td></tr>
+            <tr><td>Días de ejecución</td><td><input class="editable-input" type="number" id="p-dias" value="21" oninput="calcPipeline()"></td></tr>
+            <tr><td>% de respuesta estimado</td><td><input class="editable-input" type="number" id="p-resp" value="20" oninput="calcPipeline()"></td></tr>
+            <tr><td>% de conversión a propuesta</td><td><input class="editable-input" type="number" id="p-conv" value="30" oninput="calcPipeline()"></td></tr>
+            <tr><td>% de cierre de propuestas</td><td><input class="editable-input" type="number" id="p-cierre" value="50" oninput="calcPipeline()"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="pipeline-grid">
+          <div class="pipeline-card">
+            <div class="p-icon">📨</div>
+            <div class="p-value" id="p-total">105</div>
+            <div class="p-label">Contactos totales</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="p-icon">💬</div>
+            <div class="p-value" id="p-respuestas">21</div>
+            <div class="p-label">Conversaciones activas</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="p-icon">🤝</div>
+            <div class="p-value" id="p-clientes">3</div>
+            <div class="p-label">Clientes cerrados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bono3" class="page">
+    <div class="page-inner">
+      <div class="section-header">
+        <span class="bono-badge">BONO 3</span>
+        <h1>FinTrack Freelancer</h1>
+        <p class="tagline">Dashboard financiero inteligente para tu negocio</p>
+      </div>
+
+      <div class="content-block">
+        <h2 class="block-title">Control Financiero Total</h2>
+        <p class="block-text">FinTrack te ayuda a entender exactamente cómo está tu negocio. Desde ingresos hasta distribución inteligente de dinero, todo en un solo lugar.</p>
+      </div>
+
+      <div class="interactive-section">
+        <span class="interactive-label">📊 Panel de Ingresos</span>
+        <h3>Registra tus clientes activos</h3>
+        <p class="desc">Ingresa el monto que cobra a cada cliente este mes.</p>
+
+        <table class="form-table">
+          <thead>
+            <tr><th>Cliente</th><th>Monto ($)</th><th>Estado</th><th>Fecha</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="editable-input" type="text" placeholder="Cliente 1"></td>
+              <td><input class="editable-input ingreso-val" type="number" placeholder="0" oninput="calcIngresos()"></td>
+              <td><select class="select-input"><option>Cobrado ✓</option><option>Pendiente</option><option>Vencido</option></select></td>
+              <td><input class="editable-input" type="date"></td>
+            </tr>
+            <tr>
+              <td><input class="editable-input" type="text" placeholder="Cliente 2"></td>
+              <td><input class="editable-input ingreso-val" type="number" placeholder="0" oninput="calcIngresos()"></td>
+              <td><select class="select-input"><option>Cobrado ✓</option><option>Pendiente</option><option>Vencido</option></select></td>
+              <td><input class="editable-input" type="date"></td>
+            </tr>
+            <tr>
+              <td><input class="editable-input" type="text" placeholder="Cliente 3"></td>
+              <td><input class="editable-input ingreso-val" type="number" placeholder="0" oninput="calcIngresos()"></td>
+              <td><select class="select-input"><option>Cobrado ✓</option><option>Pendiente</option><option>Vencido</option></select></td>
+              <td><input class="editable-input" type="date"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="result-card">
+          <div class="result-label" id="ingresos-desc">Ingresa tus datos para ver el total</div>
+          <div class="result-value" id="total-ingresos">$0</div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Distribución de ingresos por cliente</div>
+          <canvas id="ingresoChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="interactive-section">
+        <span class="interactive-label">💰 Distribución 30-20-20-30</span>
+        <h3>¿Cómo distribuir tu ingreso?</h3>
+        <p class="desc">Ingresa tu ingreso mensual total para ver la distribución recomendada.</p>
+
+        <table class="form-table">
+          <thead><tr><th>Concepto</th><th>Monto</th></tr></thead>
+          <tbody>
+            <tr><td>Ingreso mensual total ($)</td><td><input class="editable-input" type="number" id="dist-ingreso" placeholder="Ej: 3000" oninput="calcDistribucion()"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="pipeline-grid">
+          <div class="pipeline-card">
+            <div class="p-icon">🏛️</div>
+            <div class="p-value" id="val-imp">$0</div>
+            <div class="p-label">30% Impuestos</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="p-icon">🏦</div>
+            <div class="p-value" id="val-fondo">$0</div>
+            <div class="p-label">20% Fondo</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="p-icon">🚀</div>
+            <div class="p-value" id="val-reinv">$0</div>
+            <div class="p-label">20% Reinversión</div>
+          </div>
+          <div class="pipeline-card">
+            <div class="p-icon">👤</div>
+            <div class="p-value" id="val-pers">$0</div>
+            <div class="p-label">30% Personal</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Visualización de distribución</div>
+          <canvas id="distChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="interactive-section">
+        <span class="interactive-label">🚦 Semáforo de Salud Financiera</span>
+        <h3>¿Cómo está tu negocio?</h3>
+        <p class="desc">Ingresa tus datos financieros para ver los indicadores de salud.</p>
+
+        <table class="form-table">
+          <thead><tr><th>Indicador</th><th>Tu número</th></tr></thead>
+          <tbody>
+            <tr><td>Gastos mensuales fijos ($)</td><td><input class="editable-input" type="number" id="sem-gastos" placeholder="Ej: 1500" oninput="calcSemaforo()"></td></tr>
+            <tr><td>Fondo de estabilidad actual ($)</td><td><input class="editable-input" type="number" id="sem-fondo" placeholder="Ej: 2000" oninput="calcSemaforo()"></td></tr>
+            <tr><td>Ingreso del cliente principal ($)</td><td><input class="editable-input" type="number" id="sem-cliente1" placeholder="Ej: 1800" oninput="calcSemaforo()"></td></tr>
+            <tr><td>Ingreso total mensual ($)</td><td><input class="editable-input" type="number" id="sem-total" placeholder="Ej: 3000" oninput="calcSemaforo()"></td></tr>
+            <tr><td>Monto reinvertido ($)</td><td><input class="editable-input" type="number" id="sem-reinv" placeholder="Ej: 300" oninput="calcSemaforo()"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="semaphore-grid">
+          <div class="semaphore-card">
+            <h4>⏰ Meses de Fondo</h4>
+            <div class="s-value" id="val-meses">0</div>
+            <div class="s-label" id="val-meses-label">meses</div>
+          </div>
+          <div class="semaphore-card">
+            <h4>🎯 Dependencia</h4>
+            <div class="s-value" id="val-dep">0%</div>
+            <div class="s-label">del cliente principal</div>
+          </div>
+          <div class="semaphore-card">
+            <h4>📈 Reinversión</h4>
+            <div class="s-value" id="val-ratio">0%</div>
+            <div class="s-label">del ingreso total</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const element = document.getElementById(id);
+  setTimeout(() => {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function calcRetainer() {
+  const priceEl = document.getElementById('retainer-price');
+  const clientsEl = document.getElementById('retainer-clients');
+  const totalEl = document.getElementById('retainer-total');
+  
+  if (!priceEl || !clientsEl || !totalEl) return;
+  
+  const price = parseFloat(priceEl.value) || 0;
+  const clients = parseFloat(clientsEl.value) || 0;
+  const total = price * clients;
+  totalEl.textContent = '$' + total.toLocaleString('es-AR', {minimumFractionDigits: 0});
+  saveData();
+}
+
+function calcPipeline() {
+  const dia = parseFloat(document.getElementById('p-dia').value) || 0;
+  const dias = parseFloat(document.getElementById('p-dias').value) || 0;
+  const resp = parseFloat(document.getElementById('p-resp').value) || 0;
+  const conv = parseFloat(document.getElementById('p-conv').value) || 0;
+  const cierre = parseFloat(document.getElementById('p-cierre').value) || 0;
+  const total = dia * dias;
+  const respuestas = Math.round(total * resp / 100);
+  const propuestas = Math.round(respuestas * conv / 100);
+  const clientes = Math.round(propuestas * cierre / 100);
+  document.getElementById('p-total').textContent = total;
+  document.getElementById('p-respuestas').textContent = respuestas;
+  document.getElementById('p-clientes').textContent = clientes;
+  saveData();
+}
+
+let ingresoChart = null;
+function calcIngresos() {
+  const inputs = document.querySelectorAll('.ingreso-val');
+  let total = 0;
+  const vals = [];
+  inputs.forEach(i => { const v = parseFloat(i.value) || 0; total += v; vals.push(v); });
+  document.getElementById('total-ingresos').textContent = '$' + total.toLocaleString('es-AR');
+  document.getElementById('ingresos-desc').textContent = total > 0 ? 'Suma de todos tus clientes activos este mes' : 'Ingresa tus datos para ver el total';
+  saveData();
+
+  const ctx = document.getElementById('ingresoChart');
+  if (!ctx) return;
+  if (ingresoChart) ingresoChart.destroy();
+  const labels = vals.map((v, i) => `Cliente ${i+1}`).filter((_, i) => vals[i] > 0);
+  const data = vals.filter(v => v > 0);
+  if (data.length === 0) return;
+  ingresoChart = new Chart(ctx.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: ['#9B7BB8','#5DBFB8','#7ECCC4','#B8A8D8','#E8B4D4'], borderWidth: 0 }]
+    },
+    options: { plugins: { legend: { position: 'right' } }, cutout: '65%' }
+  });
+}
+
+let distChart = null;
+function calcDistribucion() {
+  const ing = parseFloat(document.getElementById('dist-ingreso').value) || 0;
+  const vals = [ing*0.30, ing*0.20, ing*0.20, ing*0.30];
+  const ids = ['val-imp','val-fondo','val-reinv','val-pers'];
+  ids.forEach((id, i) => { document.getElementById(id).textContent = '$' + vals[i].toLocaleString('es-AR', {minimumFractionDigits: 0}); });
+  saveData();
+
+  const ctx = document.getElementById('distChart');
+  if (!ctx) return;
+  if (distChart) distChart.destroy();
+  distChart = new Chart(ctx.getContext('2d'), {
+    type: 'pie',
+    data: {
+      labels: ['30% Impuestos','20% Fondo','20% Reinversión','30% Personal'],
+      datasets: [{ data: [30,20,20,30], backgroundColor: ['#9B7BB8','#5DBFB8','#7ECCC4','#E8B4D4'], borderWidth: 0 }]
+    },
+    options: { plugins: { legend: { position: 'right' } } }
+  });
+}
+
+function calcSemaforo() {
+  const gastos = parseFloat(document.getElementById('sem-gastos').value) || 0;
+  const fondo = parseFloat(document.getElementById('sem-fondo').value) || 0;
+  const cliente1 = parseFloat(document.getElementById('sem-cliente1').value) || 0;
+  const total = parseFloat(document.getElementById('sem-total').value) || 0;
+  const reinv = parseFloat(document.getElementById('sem-reinv').value) || 0;
+
+  const meses = gastos > 0 ? (fondo / gastos).toFixed(1) : 0;
+  document.getElementById('val-meses').textContent = meses;
+
+  const dep = total > 0 ? Math.round((cliente1 / total) * 100) : 0;
+  document.getElementById('val-dep').textContent = dep + '%';
+
+  const ratio = total > 0 ? Math.round((reinv / total) * 100) : 0;
+  document.getElementById('val-ratio').textContent = ratio + '%';
+  saveData();
+}
+
+function saveData() {
+  try {
+    const data = {};
+    document.querySelectorAll('[id]').forEach(el => {
+      if (el.value !== undefined && el.value !== '') {
+        data[el.id] = el.value;
+      }
+    });
+    localStorage.setItem('workbookData', JSON.stringify(data));
+  } catch(e) { }
+}
+
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem('workbookData') || '{}');
+    Object.keys(data).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = data[id];
+    });
+  } catch(e) { }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadData();
+  calcRetainer();
+  calcPipeline();
+  calcIngresos();
+  calcDistribucion();
+  calcSemaforo();
+});
+
+document.addEventListener('change', saveData);
+document.addEventListener('input', saveData);
+</script>
+</body>
+</html>
